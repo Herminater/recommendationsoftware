@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
+
 def get_ingredient_lists(url):
     # Set up Chrome options
     chrome_options = Options()
@@ -27,13 +28,11 @@ def get_ingredient_lists(url):
 
         # Parse the HTML content of the page
         soup = BeautifulSoup(page_source, 'html.parser')
-        if soup:
-            print("S")
 
+        # find recipes and follow links for each recipe
         recipes = soup.find('div', class_="grid grid-cols-2 gap-10 md:grid-cols-4 md:gap-15 px-5 md:px-0")
         for article in recipes.find_all('article'):
             follow_link = article.find('div', class_='relative').find('a')
-            print(follow_link['href'])
 
             driver.get(follow_link['href'])
 
@@ -46,24 +45,22 @@ def get_ingredient_lists(url):
 
             if ingredient_elements:
                 print("Recipe found")
+                # Split and process recipe name from url
                 recipe_name = follow_link['href'].split("/")[-1].replace("-", " ").capitalize()
                 ingrediens_liste = []
+                # Get ingrediens and add to list and add to dict with title and url
                 for i, ingredient_element in enumerate(ingredient_elements):
                     ingredient = ingredient_element.get('content').replace("  ", " ").strip()
                     
-                    # print(f"Ingredient {i + 1}: {ingredient}")
                     ingrediens_liste.append(ingredient)
-                    # identify number in ingredient
-                    # add number + ingredient as tuple to list 
-                    # add recipe name with list as value to dict
-                    recipe_dict[recipe_name] = ingrediens_liste
+                   
+                    recipe_dict[recipe_name] = [ingrediens_liste, follow_link['href']]
 
-                # print("\n")
-                print(recipe_dict)
+                
             else:
                 print("No ingredients found. Check HTML structure.")
 
-
+        return recipe_dict
 
 
     finally:

@@ -1,7 +1,11 @@
+from webcrawler import get_ingredient_lists
+
+
 class RecipeNode:
-    def __init__(self, name, ingrediens):
+    def __init__(self, name, ingrediens, url):
         self.name = name
-        self.ingrediens = ingrediens
+        self.ingredients = ingrediens
+        self.url = ""
 
     def __str__(self):
         return f"{self.name} recipe"
@@ -11,6 +15,7 @@ class QuestionNode:
         self.question = question #Do you want meat? 
         self.ingredient = ingredient #Meat
         self.recipe_with_ingredient = []
+        self.recipe_without_ingredient = []
         self.yes_node = None
         self.no_node = None
 
@@ -41,7 +46,7 @@ class QuestionNode:
         else:
             self.add_recipe(self.no_node, recipe_node)
 
-    def traverse_tree_and_add(self, root, question_node):
+    def traverse_tree_and_add_question(self, root, question_node):
         current_node = root
         queue = [current_node]
 
@@ -59,17 +64,62 @@ class QuestionNode:
                 current_node.no_node = question_node
             
         return "Done"
-            
+    
+    def traverse_tree_and_add_recipe(self, root, recipe_node):
+        current_node = root
+        queue = [current_node]
 
-root = QuestionNode("Meat?", "Meat")
-linser = QuestionNode("Linser?", "Linser")
-kartofler = QuestionNode("Kartofler?", "Kartofler")
-kikærter = QuestionNode("Kikærter?", "Kikærter")
-ærter = QuestionNode("Ærter?", "Ærter")
-citron = QuestionNode("Citron?", "Citron")
-nødder = QuestionNode("Nødder?", "Nødder")
+        while queue:
+            current_node = queue.pop(0)
+            if current_node.ingredient in recipe_node.ingredients:
+                print(f"Adding {recipe_node} to the includes {current_node} ")
+                current_node.recipe_with_ingredient.append(recipe_node)
+                # then 
+                if current_node.yes_node is not None:
+                    queue.append(current_node.yes_node)
+            else:
+                print(f"Adding {recipe_node} to the does not include {current_node} ")
+                current_node.recipe_without_ingredient.append(recipe_node)
+                if current_node.no_node is not None:
+                    queue.append(current_node.no_node)
+        
+        return "Done"
 
-root.traverse_tree_and_add(root, linser)
-root.traverse_tree_and_add(root, kartofler)
-root.traverse_tree_and_add(root, kikærter)
+root_løg = QuestionNode("Løg?", "løg")
+kartofler = QuestionNode("Kartofler?", "kartofler")
+chili = QuestionNode("Chili?", "chili")
+kikærter = QuestionNode("Kikærter?", "kikærter")
+linser = QuestionNode("Linser?", "linser")
+kokosmælk = QuestionNode("Kokosmælk?", "kokosmælk")
+nødder = QuestionNode("Nødder?", "nødder")
+ris = QuestionNode("Ris?", "ris")
+tomater = QuestionNode("Tomater?", "tomater")
+blomkål = QuestionNode("Blomkål?", "blomkål")
+æg = QuestionNode("Æg?", "Æg")
+aubeginer = QuestionNode("Auberginer?", "Auberginer")
+bønner = QuestionNode("Bønner?", "bønner")
+
+root_løg.traverse_tree_and_add_question(root_løg, kartofler)
+root_løg.traverse_tree_and_add_question(root_løg, chili)
+root_løg.traverse_tree_and_add_question(root_løg, kikærter)
+root_løg.traverse_tree_and_add_question(root_løg, linser)
+root_løg.traverse_tree_and_add_question(root_løg, kokosmælk)
+root_løg.traverse_tree_and_add_question(root_løg, nødder)
+root_løg.traverse_tree_and_add_question(root_løg, ris)
+root_løg.traverse_tree_and_add_question(root_løg, tomater)
+root_løg.traverse_tree_and_add_question(root_løg, blomkål)
+root_løg.traverse_tree_and_add_question(root_løg, æg)
+root_løg.traverse_tree_and_add_question(root_løg, aubeginer)
+root_løg.traverse_tree_and_add_question(root_løg, bønner)
+
+recipes = get_ingredient_lists('https://spisbedre.dk/temaer/vegetariske-gryderetter')
+recipe_list = []
+
+for name, ingredient_and_url in recipes.items():
+    name = RecipeNode(name, ingredient_and_url[0], ingredient_and_url[1])
+    recipe_list.append(name)
+
+print(recipe_list)
+
+# root_løg.traverse_tree_and_add_recipe(root_løg, meatballs)
 
