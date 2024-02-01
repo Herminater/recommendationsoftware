@@ -70,5 +70,3 @@ def get_ingredient_lists(url):
 # URL of the website
 url = 'https://spisbedre.dk/temaer/vegetariske-gryderetter'
 
-# Call the function with the provided URL
-get_ingredient_lists(url)
