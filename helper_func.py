@@ -119,7 +119,7 @@ root_løg.traverse_tree_and_add_question(root_løg, æg)
 root_løg.traverse_tree_and_add_question(root_løg, aubeginer)
 root_løg.traverse_tree_and_add_question(root_løg, bønner)
 
-kødboller = RecipeNode("kødboller", ["løg"], "fjkdlsfjksd")
+kødboller = RecipeNode("kødboller", {"løg", "chili", "kartofler"}, "fjkdlsfjksd")
 
 root_løg.traverse_tree_and_add_recipe(root_løg, kødboller)
 

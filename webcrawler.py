@@ -47,14 +47,14 @@ def get_ingredient_lists(url):
                 print("Recipe found")
                 # Split and process recipe name from url
                 recipe_name = follow_link['href'].split("/")[-1].replace("-", " ").capitalize()
-                ingrediens_liste = []
+                ingrediens_set = set()
                 # Get ingrediens and add to list and add to dict with title and url
                 for i, ingredient_element in enumerate(ingredient_elements):
                     ingredient = ingredient_element.get('content').replace("  ", " ").strip()
                     
-                    ingrediens_liste.append(ingredient)
+                    ingrediens_set.add(ingredient)
                    
-                    recipe_dict[recipe_name] = [ingrediens_liste, follow_link['href']]
+                    recipe_dict[recipe_name] = [ingrediens_set, follow_link['href']]
 
                 
             else:
